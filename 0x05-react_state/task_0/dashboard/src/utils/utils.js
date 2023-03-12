@@ -1,12 +1,14 @@
-export const getFullYear = () => {
-  return 2021;
-}
+import React from 'react';
 
-export const getFooterCopy = isIndex => {
+export const getFullYear = () => {
+  return new Date().getFullYear();
+};
+
+export const getFooterCopy = (isIndex) => {
   if (isIndex) return 'Holberton School';
-  else return 'Holberton School main dashboard';
-}
+  return 'Holberton School main dashboard';
+};
 
 export const getLatestNotification = () => {
   return '<strong>Urgent requirement</strong> - complete by EOD';
-}
+};

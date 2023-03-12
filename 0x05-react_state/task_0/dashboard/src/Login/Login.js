@@ -1,47 +1,39 @@
 import React from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
-const Login = () => {
+function Login(){
   return (
-    <>
-      <div className={css(styles.appBody, styles.small)}>
-        <h1>Log in to continue</h1>
+    <React.Fragment>
+      <div className={css(style.mediumContainer)}>
         <p>Login to access the full dashboard</p>
-        <label htmlFor="email">Email: </label>
-        <input className={css(styles.noBorder)} type="email" id="email" name="email" />
-        <label htmlFor="password">Password: </label>
-        <input className={css(styles.noBorder)} type="password" id="password" name="password" />
-        <button className={css(styles.yellowBorder)}>OK</button>
+        <label htmlFor="email">Email</label>
+        <input type="email" id="email" name="email" className={css(style.loginContainerInput, style.mediumLogin)}/>
+        <label htmlFor="password">Password</label>
+        <input type="password" id="password" name="password" className={css(style.loginContainerInput, style.mediumLogin)}/>
+        <button className={css(style.mediumLogin)}>OK</button>
       </div>
-    </>
-  );
+    </React.Fragment>
+  )
 }
 
-const styles = StyleSheet.create({
-  appBody: {
-    minHeight: '50vh',
-    textAlign: 'left',
-    marginTop: '2rem',
-    marginLeft: '2rem',
+const style = StyleSheet.create({
+  loginContainerInput: {
+    marginRight: '9px',
+    marginLeft: '9px',
   },
-  small: {
+  mediumContainer: {
     '@media (max-width: 900px)': {
-      display: 'grid',
-      justifyContent: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
     }
   },
-  noBorder: {
+  mediumLogin: {
     '@media (max-width: 900px)': {
-      border: 'none'
-    }
-  },
-  yellowBorder: {
-    '@media (max-width: 900px)': {
-      border: '2px solid gold',
-      backgroundColor: 'transparent',
-      width: '5vw'
-    }
+      width: '30%',
+      margin: '9px 0',
   }
-})
+  }
+});
 
 export default Login;
