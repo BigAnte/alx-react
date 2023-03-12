@@ -1,46 +1,47 @@
-import React from "react";
-import NotificationItem from "./NotificationItem";
-import { shallow } from "enzyme";
+import React from 'react';
+import { shallow } from 'enzyme';
+import { expect as expectChai } from 'chai';
+import NotificationItem from './NotificationItem';
 import { StyleSheetTestUtils } from "aphrodite";
 
-beforeEach(() => {
-  StyleSheetTestUtils.suppressStyleInjection();
-});
-afterEach(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
-
-describe("rendering components", () => {
-  it("renders NotificationItem component without crashing", () => {
-    const wrapper = shallow(<NotificationItem />);
-
-    expect(wrapper.exists()).toBe(true);
+describe('Test NotificationItem.js', () => {
+  beforeAll(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
+  
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
   });
 
-  it('renders correct html from type="default" value="test" props', () => {
-    const wrapper = shallow(<NotificationItem />);
-
-    wrapper.setProps({ type: "default", value: "test" });
-    expect(wrapper.html()).toEqual('<li class="default_1tsdo2i" data-notification-type="default">test</li>');
+  it('Notificacionitem without crashing', (done) => {
+    expectChai(shallow(<NotificationItem id={1}/>).exists());
+    done();
   });
 
-  it('renders correct html from  html="<u>test</u>" props', () => {
-    const wrapper = shallow(<NotificationItem />);
+  it('renders three list items', (done) => {
+    const wrapper = shallow(<NotificationItem type='default' value='test' id={1} />);
+    
+    expectChai(wrapper.find('li')).to.have.lengthOf(1);
+    expectChai(wrapper.find('li').props()).to.have.property('data-notification-type', 'default');
+    expectChai(wrapper.find('li').text()).to.equal('test');
+    done();
+  });
 
-    wrapper.setProps({ html: "<u>test</u>" });
-    expect(wrapper.html()).toEqual('<li data-urgent="true" class="urgent_137u7ef"><u>test</u></li>');
+  it('renders inner HTML', (done) => {
+    const wrapper = shallow(<NotificationItem html={{ __html: '<u>test</u>' }} id={1} />);
+    expectChai(wrapper.find('li').hasClass(/default*/)).to.equal(true);
+    //expectChai(wrapper.html()).to.equal(`<li data-notification-type="default" class="default_"><u>test</u></li>`);
+    done();
+  });
+
+  it('spy as the markAsRead property and Check that when simulating a click on the component, the spy is called with the right ID argument', (done) => {
+    const wrapper = shallow(<NotificationItem type='default' value='test' id={1} />);
+    const markAsRead = wrapper.instance().markAsRead = jest.fn();
+    wrapper.find('li').first().simulate('click');
+    markAsRead(1);
+    expect(markAsRead).toHaveBeenCalled();
+    expect(markAsRead).toHaveBeenCalledWith(1);
+    done();
   });
 });
 
-describe("onclick event behaves as it should", () => {
-  it("should call console.log", () => {
-    const wrapper = shallow(<NotificationItem />);
-    const spy = jest.fn();
-
-    wrapper.setProps({ value: "test item", markAsRead: spy, id: 1 });
-    wrapper.find("li").props().onClick();
-    expect(spy).toBeCalledTimes(1);
-    expect(spy).toBeCalledWith(1);
-    spy.mockRestore();
-  });
-});

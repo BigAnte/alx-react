@@ -1,14 +1,29 @@
-import { getFullYear, getFooterCopy, getLatestNotification } from "./utils";
+import React from 'react';
+import { getLatestNotification, getFullYear, getFooterCopy } from './utils';
+import { StyleSheetTestUtils } from "aphrodite";
 
-test("returns current year", () => {
-  expect(getFullYear()).toBe(2022);
-});
+describe('Test Utils.js', () => {
+  beforeAll(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
+  
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+  });
 
-test("correct footer copy", () => {
-  expect(getFooterCopy(true)).toBe("Holberton School");
-  expect(getFooterCopy(false)).toBe("Holberton School main dashboard");
-});
+  it('Function getFullYear', (done) => {
+    expect(getFullYear()).toBe(new Date().getFullYear());
+    done();
+  });
 
-test("returns right notification", () => {
-  expect(getLatestNotification()).toBe("<strong>Urgent Requirement</strong> - complete by EOD");
+  it('Function getFooterCopy', (done) => {
+    expect(getFooterCopy(true)).toBe('Holberton School');
+    expect(getFooterCopy(false)).toBe('Holberton School main dashboard');
+    done();
+  });
+
+  it('Function getLatestNotification', (done) => {
+    expect(getLatestNotification()).toBe('<strong>Urgent requirement</strong> - complete by EOD');
+    done();
+  });
 });

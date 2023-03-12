@@ -1,31 +1,42 @@
-import React from "react";
-import { shallow } from "enzyme";
-import WithLogging from "./WithLogging";
+import React from 'react';
+import { shallow, mount } from 'enzyme';
+import { expect as expectChai } from 'chai';
+import WithLogging from './WithLogging';
+import Login from '../Login/Login';
+import { StyleSheetTestUtils } from "aphrodite";
 
-const TestComponent = () => <p>Test Component</p>;
-
-describe("WithLogging tests", () => {
-  it("should call console.log on mount and dismount", () => {
-    const spy = jest.spyOn(console, "log").mockImplementation();
-    const NewComponent = WithLogging(TestComponent);
-    const wrapper = shallow(<NewComponent />);
-
-    expect(spy).toBeCalledTimes(1);
-    wrapper.unmount();
-    expect(spy).toBeCalledTimes(2);
-    spy.mockRestore();
+describe('Test WithLogging.js', () => {
+  beforeAll(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+  });
+  
+  afterAll(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
   });
 
-  it("should log out the right message on mount and on unmount", () => {
-    const spy = jest.spyOn(console, "log").mockImplementation();
-    const NewComponent = WithLogging(TestComponent);
-    const wrapper = shallow(<NewComponent />);
+  it('console.log was called on mount and on unmount with Component when the wrapped element is pure html', (done) => {
+    const WrapElement = WithLogging(() => <a></a>);
+    console.log = jest.fn();
+    const wrapper = mount(<WrapElement />);
+    expect(console.log).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith('Component Component is mounted');
 
-    expect(spy).toBeCalledTimes(1);
-    expect(spy).toBeCalledWith("Component TestComponent is mounted");
     wrapper.unmount();
-    expect(spy).toHaveBeenCalledTimes(2);
-    expect(spy).toBeCalledWith("Component TestComponent is going to unmount");
-    spy.mockRestore();
+    expect(console.log).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith('Component Component is going to unmount');
+    done();
+  });
+
+  it('console.log was called on mount and on unmount with the name of the component when the wrapped element is the Login component. ', (done) => {
+    const WrapElement = WithLogging(Login);
+    console.log = jest.fn();
+    const wrapper = mount(<WrapElement />);
+    expect(console.log).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith('Component Login is mounted');
+
+    wrapper.unmount();
+    expect(console.log).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith('Component Login is going to unmount');
+    done();
   });
 });
